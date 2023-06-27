@@ -2,11 +2,17 @@ const express = require('express')
 const app = express()
 
 const { getAllTopics } = require('./controllers/topics.controllers.js')
+const { getArticlesById } = require('./controllers/articles.controllers.js')
+const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./errors/errors.js')
 
 app.get('/api/topics', getAllTopics)
 
-app.use((error, request, response, next) => {
-    response.status(500).send('Server Error!');
-  })
+app.get('/api/articles/:article_id', getArticlesById)
+
+app.use(handlePsqlErrors)
+
+app.use(handleCustomErrors)
+
+app.use(handleServerErrors)
 
 module.exports = app
