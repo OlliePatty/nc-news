@@ -36,7 +36,7 @@ exports.selectAllArticles = () => {
                 articleObj.comment_count = 0
             })
     
-        articles.map((article) => {
+        articles.forEach((article) => {
             comments.forEach((comment) => {
                 if(article.article_id === comment.article_id){
                     article.comment_count ++
@@ -45,5 +45,17 @@ exports.selectAllArticles = () => {
         })
         return articles
     })
+    })
+}
+
+exports.selectCommentsFromArticleId = (id) => {
+    return db.query(`
+    SELECT * FROM comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;`, [id]).then(({rows}) => {
+        if(!rows.length){
+            return Promise.reject({ status: 404, msg: 'Not found' })
+        }
+        return rows
     })
 }
