@@ -11,6 +11,9 @@ app.get('/api/articles/:article_id', getArticlesById)
 
 app.get('/api/articles', getAllArticles)
 
+
+
+
 app.all('*', (_, response) => {
     response.status(404).send({status: 404, msg: 'Not found'})
 })

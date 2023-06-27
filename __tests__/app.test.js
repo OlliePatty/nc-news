@@ -134,3 +134,20 @@ describe('GET /api/articles', () => {
         })
     })
 })
+
+describe('GET /api/users', () => {
+    test('status:200, should return an array of user objects, with username, name and avatar_url properties', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const { users } = body
+                expect(users).toHaveLength()
+            users.forEach((user) => {
+                expect(user).toHaveProperty('username', expect.any(String))
+                expect(user).toHaveProperty('name', expect.any(String))
+                expect(user).toHaveProperty('avatar_url', expect.any(String))
+            })
+        })
+    })
+})
