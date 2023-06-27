@@ -40,7 +40,7 @@ exports.selectAllArticles = () => {
           const comments = commentsData.rows;
           return comments;
         })
-        .then((comments) => {
+    .then((comments) => {
           articles.forEach((article) => {
             article.comment_count = 0;
             comments.forEach((comment) => {
