@@ -9,8 +9,6 @@ app.get('/api/topics', getAllTopics)
 
 app.get('/api/articles/:article_id', getArticlesById)
 
-app.get('/api/articles/:article_id/comments', getCommentsFromArticleId)
-
 app.use(handlePsqlErrors)
 
 app.use(handleCustomErrors)
