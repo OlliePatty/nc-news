@@ -134,3 +134,22 @@ describe('GET /api/articles', () => {
         })
     })
 })
+
+// describe('POST /api/articles/:article_id/comments', () => {
+//     test('status:201, should add a comment for an article when passed and article ID', () => {
+//         const newComment =   {
+//             body: "An insightful article shedding light on the latest breakthrough in renewable energy technology!",
+//             author: "butter_bridge"
+//           }
+//         return request(app)
+//         .post('/api/articles/9/comments')
+//         .send(newComment)
+//         .expect(201)
+//         .then(({body}) => {
+//             const { comment } = body
+//             expect(comment).toMatchObject({
+
+//             })
+//         })
+//     })
+// })
