@@ -1,8 +1,7 @@
 const db = require("../connection");
 
 exports.selectArticlesById = (id) => {
-  return db
-    .query(`
+  return db.query(`
     SELECT * FROM articles
     WHERE article_id = $1;`,
       [id]
@@ -16,16 +15,9 @@ exports.selectArticlesById = (id) => {
 };
 
 exports.selectAllArticles = () => {
-  return db
-    .query(`
+  return db.query(`
     SELECT 
-    author,
-    title,
-    article_id,
-    topic,
-    created_at,
-    votes,
-    article_img_url
+    author, title, article_id, topic, created_at, votes, article_img_url
     FROM articles
     ORDER BY created_at DESC;`
     )
@@ -34,8 +26,7 @@ exports.selectAllArticles = () => {
       return articles;
     })
     .then((articles) => {
-      return db
-        .query(`SELECT * FROM comments;`)
+      return db.query(`SELECT * FROM comments;`)
         .then((commentsData) => {
           const comments = commentsData.rows;
           return comments;
@@ -55,8 +46,7 @@ exports.selectAllArticles = () => {
 };
 
 exports.selectCommentsFromArticleId = (id) => {
-  return db
-    .query(`
+  return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
     ORDER BY created_at DESC;`,
@@ -69,3 +59,17 @@ exports.selectCommentsFromArticleId = (id) => {
       return rows;
     });
 };
+
+exports.insertComments = (articleId, {body, username}) => {
+    if (!body.length){
+        return Promise.reject({status: 400, msg: 'Bad request'})
+    }
+    return db.query(`
+    INSERT INTO comments
+    (body, author, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *;`, [body, username, articleId]).then(({rows}) => {
+        return rows[0]
+    })
+}
