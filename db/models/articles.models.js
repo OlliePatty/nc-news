@@ -61,7 +61,7 @@ exports.selectCommentsFromArticleId = (id) => {
 };
 
 exports.insertComments = (articleId, {body, username}) => {
-    if (!body.length){
+    if (!body || !username){
         return Promise.reject({status: 400, msg: 'Bad request'})
     }
     return db.query(`
