@@ -1,4 +1,4 @@
-const app = require('./connection')
+const app = require('./db/connection')
 
 const { PORT = 9090 } = process.env
 

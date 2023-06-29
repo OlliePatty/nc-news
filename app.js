@@ -2,10 +2,10 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
-const { getAllTopics } = require('./controllers/topics.controllers.js')
-const { getArticlesById, getAllArticles, getCommentsFromArticleId, postComments, patchArticleVotes } = require('./controllers/articles.controllers.js')
-const { getAllUsers } = require('./controllers/users.controllers.js')
-const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./errors/errors.js')
+const { getAllTopics } = require('./db/controllers/topics.controllers.js')
+const { getArticlesById, getAllArticles, getCommentsFromArticleId, postComments, patchArticleVotes } = require('./db/controllers/articles.controllers.js')
+const { getAllUsers } = require('./db/controllers/users.controllers.js')
+const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./db/errors/errors.js')
 
 app.get('/api/topics', getAllTopics)
 
