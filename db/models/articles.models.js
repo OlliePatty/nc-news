@@ -74,7 +74,6 @@ exports.insertComments = (articleId, {body, username}) => {
     })
 }
 
-
 exports.updateArticleVotes = (votes, id) => {
   if(!votes){
     return Promise.reject({status: 400, msg: 'Bad request'})
