@@ -235,45 +235,167 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
   test("status:400, when passed an empty body should return error msg Bad request", () => {
-    const newComment3 = {
+    const newComment = {
       body: "",
       username: "icellusedkars",
     };
     return request(app)
       .post("/api/articles/6/comments")
-      .send(newComment3)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("status:400, when passed an empty username should return error msg Bad request", () => {
+    const newComment = {
+      body: "This news undoubtedly opens up new possibilities and promises exciting advancements in the future.",
+      username: "",
+    };
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("status:400, when passed a comment without a body or username property should ignore other properties and return error msg Bad request", () => {
+    const newComment = {
+      randomSentence: "Let's continue to engage with these important narratives and work together towards a more informed and empathetic society.",
+      xboxGamertag: "bobthebuilder",
+    };
+    return request(app)
+      .post("/api/articles/8/comments")
+      .send(newComment)
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
       });
   });
   test("status:404, when passed an invalid username should return error msg Not found", () => {
-    const newComment4 = {
+    const newComment = {
       body: "Let's continue to engage with these important narratives and work together towards a more informed and empathetic society.",
       username: "bobthebuilder",
     };
     return request(app)
       .post("/api/articles/8/comments")
-      .send(newComment4)
+      .send(newComment)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
       });
   });
   test("status:404, should return an error msg with Not found when the ID does not exist", () => {
-    const newComment5 = {
+    const newComment = {
         body: "This article provides valuable insights into the latest developments, offering a well-rounded perspective on the events shaping our present.",
         username: "icellusedkars",
       };
     return request(app)
       .post("/api/articles/999999/comments")
-      .send(newComment5)
+      .send(newComment)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
       });
   });
+  test("status:400, should return an error msg with Bad request when the ID is invalid", () => {
+    const newComment = {
+        body: "This article provides valuable insights into the latest developments, offering a well-rounded perspective on the events shaping our present.",
+        username: "icellusedkars",
+      };
+    return request(app)
+      .post("/api/articles/notAnId/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
+
+describe('PATCH /api/articles/:article_id', () => {
+  test('status:200, should update the article votes property with how many new votes there are in the input body', () => {
+    const votes = { inc_votes : 1 }
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(200)
+    .then(({body}) => {
+      const { article } = body
+      expect(article).toMatchObject({
+        article_id: 1,
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'I find this existence challenging',
+        created_at: expect.any(String),
+        votes: 101,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+      })
+    })
+  })
+  test('status:200, should update the article votes property with how many new votes there are in the input body when the votes is negative', () => {
+    const votes = { inc_votes : -85 }
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(200)
+    .then(({body}) => {
+      const { article } = body
+      expect(article).toMatchObject({
+        article_id: 1,
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'I find this existence challenging',
+        created_at: expect.any(String),
+        votes: 15,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+      })
+    })
+  })
+  test('status:400, when passed an input in the incorrect format should return error msg Bad request', () => {
+    const votes = { inc_votes : 'words' }
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+  test('status:400, when passed an empty input should return error msg Bad request', () => {
+    const votes = {}
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+  test('status:404, should return an error msg with Not found when the ID does not exist', () => {
+    const votes = { inc_votes : 23 }
+    return request(app)
+    .patch('/api/articles/999999')
+    .send(votes)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:400, should return an error msg with Bad request when the ID is invalid', () => {
+    const votes = { inc_votes : 23 }
+    return request(app)
+    .patch('/api/articles/notAnId')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+})
 
 describe("GET /api/users", () => {
   test("status:200, should return an array of user objects, with username, name and avatar_url properties", () => {
