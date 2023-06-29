@@ -190,6 +190,21 @@ describe('GET /api/articles/:article_id/comments', () => {
     })
 })
 
+
+
+
+describe('PATCH /api/articles/:article_id', () => {
+  test('status:, ', () => {
+    return request(app)
+    .patch('/api/articles/7')
+    .send()
+    .expect(200)
+    .then(({body}) => {
+      expect()
+    })
+  })
+})
+
 describe('GET /api/users', () => {
     test('status:200, should return an array of user objects, with username, name and avatar_url properties', () => {
         return request(app)
