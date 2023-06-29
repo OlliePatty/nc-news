@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 
 const { getAllTopics } = require('./controllers/topics.controllers.js')
-const { getArticlesById, getAllArticles, getCommentsFromArticleId, postComments } = require('./controllers/articles.controllers.js')
+const { getArticlesById, getAllArticles, getCommentsFromArticleId, postComments, patchArticleVotes } = require('./controllers/articles.controllers.js')
 const { getAllUsers } = require('./controllers/users.controllers.js')
 const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./errors/errors.js')
 
@@ -16,6 +16,8 @@ app.get('/api/articles', getAllArticles)
 app.get('/api/articles/:article_id/comments', getCommentsFromArticleId)
 
 app.post('/api/articles/:article_id/comments', postComments)
+
+app.patch('/api/articles/:article_id', patchArticleVotes)
 
 app.get('/api/users', getAllUsers)
 

@@ -315,13 +315,84 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 
 describe('PATCH /api/articles/:article_id', () => {
-  test('status:, ', () => {
+  test('status:200, should update the article votes property with how many new votes there are in the input body', () => {
+    const votes = { inc_votes : 1 }
     return request(app)
-    .patch('/api/articles/7')
-    .send()
+    .patch('/api/articles/1')
+    .send(votes)
     .expect(200)
     .then(({body}) => {
-      expect()
+      const { article } = body
+      expect(article).toMatchObject({
+        article_id: 1,
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'I find this existence challenging',
+        created_at: expect.any(String),
+        votes: 101,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+      })
+    })
+  })
+  test('status:200, should update the article votes property with how many new votes there are in the input body when the votes is negative', () => {
+    const votes = { inc_votes : -85 }
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(200)
+    .then(({body}) => {
+      const { article } = body
+      expect(article).toMatchObject({
+        article_id: 1,
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'I find this existence challenging',
+        created_at: expect.any(String),
+        votes: 15,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+      })
+    })
+  })
+  test('status:400, when passed an input in the incorrect format should return error msg Bad request', () => {
+    const votes = { inc_votes : 'words' }
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+  test('status:400, when passed an empty input should return error msg Bad request', () => {
+    const votes = {}
+    return request(app)
+    .patch('/api/articles/1')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+  test('status:404, should return an error msg with Not found when the ID does not exist', () => {
+    const votes = { inc_votes : 23 }
+    return request(app)
+    .patch('/api/articles/999999')
+    .send(votes)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:400, should return an error msg with Bad request when the ID is invalid', () => {
+    const votes = { inc_votes : 23 }
+    return request(app)
+    .patch('/api/articles/notAnId')
+    .send(votes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
     })
   })
 })

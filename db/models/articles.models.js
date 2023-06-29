@@ -73,3 +73,20 @@ exports.insertComments = (articleId, {body, username}) => {
         return rows[0]
     })
 }
+
+
+exports.updateArticleVotes = (votes, id) => {
+  if(!votes){
+    return Promise.reject({status: 400, msg: 'Bad request'})
+  }
+  return db.query(`
+  UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;`, [votes, id]).then(({rows}) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+    return rows[0]
+  })
+}
