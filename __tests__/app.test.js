@@ -396,6 +396,30 @@ describe('PATCH /api/articles/:article_id', () => {
   })
 })
 
+describe('DELETE /api/comments/:comment_id', () => {
+  test('status:204, when passed a comment ID should delete that comment and respond with no content', () => {
+    return request(app)
+    .delete('/api/comments/2')
+    .expect(204)
+  })
+  test('status:404, when passed a comment ID thats does not exist, should should return Erron msg Not found', () => {
+    return request(app)
+    .delete('/api/comments/999999')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:400, when passed a comment ID thats not valid, should should return Erron msg Bad request', () => {
+    return request(app)
+    .delete('/api/comments/notAnId')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+})
+
 describe("GET /api/users", () => {
   test("status:200, should return an array of user objects, with username, name and avatar_url properties", () => {
     return request(app)
