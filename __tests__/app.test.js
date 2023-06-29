@@ -4,7 +4,6 @@ const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
 const app = require("../app.js");
 const jestSorted = require("jest-sorted");
-const comments = require("../db/data/test-data/comments.js");
 
 beforeEach(() => {
   return seed(data);
