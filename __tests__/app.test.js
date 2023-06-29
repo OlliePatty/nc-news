@@ -247,6 +247,32 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
+  test("status:400, when passed an empty username should return error msg Bad request", () => {
+    const newComment3 = {
+      body: "This news undoubtedly opens up new possibilities and promises exciting advancements in the future.",
+      username: "",
+    };
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment3)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("status:400, when passed a comment without a body or username property should return error msg Bad request", () => {
+    const newComment4 = {
+      randomSentence: "Let's continue to engage with these important narratives and work together towards a more informed and empathetic society.",
+      xboxGamertag: "bobthebuilder",
+    };
+    return request(app)
+      .post("/api/articles/8/comments")
+      .send(newComment4)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
   test("status:404, when passed an invalid username should return error msg Not found", () => {
     const newComment4 = {
       body: "Let's continue to engage with these important narratives and work together towards a more informed and empathetic society.",
@@ -271,6 +297,19 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
+      });
+  });
+  test("status:400, should return an error msg with Bad request when the ID is invalid", () => {
+    const newComment5 = {
+        body: "This article provides valuable insights into the latest developments, offering a well-rounded perspective on the events shaping our present.",
+        username: "icellusedkars",
+      };
+    return request(app)
+      .post("/api/articles/notAnId/comments")
+      .send(newComment5)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
