@@ -1,12 +1,16 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
-
+const endpointsData = require('./endpoints.json')
 const { getAllTopics } = require('./db/controllers/topics.controllers.js')
 const { getArticlesById, getAllArticles, getCommentsFromArticleId, postComments, patchArticleVotes } = require('./db/controllers/articles.controllers.js')
 const { deleteComments } = require('./db/controllers/comments.controllers.js')
 const { getAllUsers } = require('./db/controllers/users.controllers.js')
 const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./db/errors/errors.js')
+
+app.get('/api', (request, response) => {
+    response.status(200).send(endpointsData)
+})
 
 app.get('/api/topics', getAllTopics)
 

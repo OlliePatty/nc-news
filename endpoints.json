@@ -1,16 +1,37 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "returns a json representation of all the available endpoints of the api"
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "returns an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "returns an article object by the article ID",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "returns an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -22,6 +43,70 @@
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "comment_count": 6
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "returns an array of comments for the given article ID",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 5,
+          "body": "I hate streaming noses",
+          "article_id": 1,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2020-11-03T21:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "should post a comment to a specific article ID and return the posted comment object",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "body": "An insightful article shedding light on the latest breakthrough in renewable energy technology!",
+        "article_id": 4,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2023-06-30T09:34:43.703Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "should update an article with how many new votes it has received and return the article object",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 101,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "should delete the given comment by the comment ID and return no content",
+    "queries": [],
+    "exampleResponse": ""
+  },
+  "GET /api/users": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
     }
