@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
 const app = require("../app.js");
+const endpointsData = require('../endpoints.json')
 const jestSorted = require("jest-sorted");
 
 beforeEach(() => {
@@ -12,6 +13,17 @@ beforeEach(() => {
 afterAll(() => {
   if (db.end) db.end();
 });
+
+describe('GET /api', () => {
+  test('status:200, responds with the contents of endpoints.json', () => {
+    return request(app)
+    .get('/api')
+    .expect(200)
+    .then(({body}) => {
+      expect(body).toEqual(endpointsData)
+    })
+  })
+})
 
 describe("GET /api/topics", () => {
   test("status:200, should return an array of topic objects, with slug and description properties", () => {
@@ -54,7 +66,7 @@ describe("GET /api/articles/:article_id", () => {
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
         });
       });
   });
@@ -402,7 +414,7 @@ describe('DELETE /api/comments/:comment_id', () => {
     .delete('/api/comments/2')
     .expect(204)
   })
-  test('status:404, when passed a comment ID thats does not exist, should should return Erron msg Not found', () => {
+  test('status:404, when passed a comment ID thats does not exist, should should return Error msg Not found', () => {
     return request(app)
     .delete('/api/comments/999999')
     .expect(404)
@@ -410,7 +422,7 @@ describe('DELETE /api/comments/:comment_id', () => {
       expect(body.msg).toBe('Not found')
     })
   })
-  test('status:400, when passed a comment ID thats not valid, should should return Erron msg Bad request', () => {
+  test('status:400, when passed a comment ID thats not valid, should should return Error msg Bad request', () => {
     return request(app)
     .delete('/api/comments/notAnId')
     .expect(400)
