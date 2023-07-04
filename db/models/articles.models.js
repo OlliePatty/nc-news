@@ -14,35 +14,36 @@ exports.selectArticlesById = (id) => {
     });
 };
 
-exports.selectAllArticles = () => {
-  return db.query(`
-    SELECT 
-    author, title, article_id, topic, created_at, votes, article_img_url
+exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
+  
+  const validTopics = ['mitch', 'cats']
+  let queryString = `
+    SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at,
+    articles.votes, articles.article_img_url, COUNT (comment_id) AS comment_count
     FROM articles
-    ORDER BY created_at DESC;`
-    )
-    .then((articlesData) => {
-      const articles = articlesData.rows;
-      return articles;
+    LEFT JOIN comments ON comments.article_id = articles.article_id `
+    const queryValues = []
+
+    if (topic){
+      queryString += `WHERE articles.topic = $1 `
+      queryValues.push(topic)
+    }
+    if(sort_by){
+      queryString += `GROUP BY articles.article_id
+      ORDER BY ${sort_by} `
+    }
+
+    if(order){
+      queryString += `${order}`
+    }
+
+    return db.query(queryString, queryValues).then(({rows}) => {
+      if(!rows.length){
+        return Promise.reject({status: 404, msg: 'Not found'})
+      } else{
+      return rows
+      }
     })
-    .then((articles) => {
-      return db.query(`SELECT * FROM comments;`)
-        .then((commentsData) => {
-          const comments = commentsData.rows;
-          return comments;
-        })
-    .then((comments) => {
-          articles.forEach((article) => {
-            article.comment_count = 0;
-            comments.forEach((comment) => {
-              if (article.article_id === comment.article_id) {
-                article.comment_count++;
-              }
-            });
-          });
-          return articles;
-        });
-    });
 };
 
 exports.selectCommentsFromArticleId = (id) => {

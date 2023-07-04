@@ -3,7 +3,7 @@ exports.handlePsqlErrors = (error, request, response, next) => {
     if(error.code === '22P02'){
         response.status(400).send({ msg: 'Bad request' })
     } else
-    if(error.code === '23503'){
+    if(error.code === '23503' || error.code === '42703'){
         response.status(404).send({ msg: 'Not found' })
     }  else next(error)
 }

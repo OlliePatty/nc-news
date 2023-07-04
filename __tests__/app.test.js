@@ -105,7 +105,7 @@ describe("GET /api/articles", () => {
           expect(article).toHaveProperty("votes", expect.any(Number));
           expect(article).toHaveProperty("article_img_url", expect.any(String));
           expect(article).not.toHaveProperty("body");
-          expect(article).toHaveProperty("comment_count", expect.any(Number));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
         });
       });
   });
@@ -133,7 +133,7 @@ describe("GET /api/articles", () => {
           votes: 0,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: 2,
+          comment_count: '2',
         });
         expect(articles[6]).toMatchObject({
           author: "butter_bridge",
@@ -144,7 +144,7 @@ describe("GET /api/articles", () => {
           votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: 11,
+          comment_count: '11',
         });
       });
   });
@@ -456,3 +456,76 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe('Get /api/articles (queries)', () => {
+  test('status:200, should return an articles array of article objects, filtered by the topic value specified in the query', () => {
+    return request(app)
+    .get('/api/articles?topic=cats')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body
+      expect(articles).toEqual([{
+        article_id: 5,
+        title: 'UNCOVERED: catspiracy to bring down democracy',
+        topic: 'cats',
+        author: 'rogersop',
+        created_at: '2020-08-03T13:14:00.000Z',
+        votes: 0,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        comment_count: '2'
+      }])
+    })
+  })
+  test('status:404, when passed a topic that does not exist returns error msg Not Found', () => {
+    return request(app)
+    .get('/api/articles?topic=apples')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:200, should return an articles array of article objects, sorted by any valid column', () => {
+    return request(app)
+    .get('/api/articles?sort_by=title')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body
+      expect(articles).toBeSortedBy("title", { descending: true })
+    })
+  })
+  test('status:404, when passed a column that does not exist returns error msg Not Found', () => {
+    return request(app)
+    .get('/api/articles?sort_by=bananas')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:200, should return an articles array of article objects, ordered by ascending', () => {
+    return request(app)
+    .get('/api/articles?order=asc')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body
+      expect(articles).toBeSortedBy("created_at", { ascending: true })
+    })
+  })
+  test('status:200, should return an articles array of article objects, ordered by descending', () => {
+    return request(app)
+    .get('/api/articles?order=desc')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body
+      expect(articles).toBeSortedBy("created_at", { descending: true })
+    })
+  })
+  test('status:200, when topic, sort_by and order are omitted should respond with all articles sorted by created_at in descending order', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body
+      expect(articles).toBeSortedBy("created_at", { descending: true })
+    })
+  })
+})
