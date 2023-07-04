@@ -553,3 +553,62 @@ describe('GET /api/users/:username', () => {
       });
   });
 })
+
+describe('POST /api/topics', () => {
+  test('status:201, should add a new topic when passed a request body, and return the new topic back', () => {
+    const newTopic = {
+      slug: 'gym',
+      description: 'Gym is love, gym is life'
+    }
+    return request(app)
+    .post('/api/topics')
+    .send(newTopic)
+    .expect(201)
+    .then(({body}) => {
+      const { topic } = body
+      expect(topic).toEqual({
+        slug: 'gym',
+        description: 'Gym is love, gym is life'
+      })
+    })
+  })
+  test("status:400, when passed an empty slug should return error msg Bad request", () => {
+    const newTopic = {
+      slug: '',
+      description: 'Gym is love, gym is life'
+    }
+    return request(app)
+      .post('/api/topics')
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("status:400, when passed an empty description should return error msg Bad request", () => {
+    const newTopic = {
+      slug: 'gym',
+      description: ''
+    }
+    return request(app)
+      .post('/api/topics')
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("status:400, when passed a topic without a slug or description property should ignore other properties and return error msg Bad request", () => {
+    const newTopic = {
+      randomSentence: "Let's continue to engage with these important narratives and work together towards a more informed and empathetic society.",
+      xboxGamertag: "bobthebuilder",
+    };
+    return request(app)
+      .post('/api/topics')
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+})
