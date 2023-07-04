@@ -15,8 +15,6 @@ exports.selectArticlesById = (id) => {
 };
 
 exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
-  
-  const validTopics = ['mitch', 'cats']
   let queryString = `
     SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at,
     articles.votes, articles.article_img_url, COUNT (comment_id) AS comment_count
@@ -46,7 +44,7 @@ exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
     })
 };
 
-exports.selectCommentsFromArticleId = (id) => {
+exports.selectCommentsByArticleId = (id) => {
   return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
