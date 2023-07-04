@@ -529,3 +529,27 @@ describe('Get /api/articles (queries)', () => {
     })
   })
 })
+
+describe('GET /api/users/:username', () => {
+  test('status:200, when passed a username, should return a user object with the correct properties', () => {
+    return request(app)
+    .get('/api/users/lurker')
+    .expect(200)
+    .then(({body}) => {
+      const { user } = body
+      expect(user).toEqual({
+        username: 'lurker',
+        name: 'do_nothing',
+        avatar_url:'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+      })
+    })
+  })
+  test("status:404, should return an error msg with Not found when the username does not exist", () => {
+    return request(app)
+      .get('/api/users/annonymousLurker')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+})
