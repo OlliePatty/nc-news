@@ -16,23 +16,6 @@ exports.getAllArticles = (request, response, next) => {
     .catch(next)
 }
 
-exports.getCommentsByArticleId = (request, response, next) => {
-    const id = request.params.article_id
-    selectCommentsByArticleId(id).then((comments) => {
-        response.status(200).send({comments})
-    })
-    .catch(next)
-}
-
-exports.postComments = (request, response, next) => {
-    const articleId = request.params.article_id
-    const newComment = request.body
-    insertComments(articleId, newComment).then((comment) => {
-        response.status(201).send({comment})
-    })
-    .catch(next)
-}
-
 exports.patchArticleVotes = (request, response, next) => {
     const votes = request.body.inc_votes
     const id = request.params.article_id
