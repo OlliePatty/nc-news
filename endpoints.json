@@ -31,7 +31,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "returns an array of all topics",
+    "description": "returns an array of all article objects",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -48,7 +48,7 @@
     }
   },
   "GET /api/articles/:article_id/comments": {
-    "description": "returns an array of comments for the given article ID",
+    "description": "returns an array of comment objects for the given article ID",
     "queries": [],
     "exampleResponse": {
       "comments": [
@@ -64,7 +64,7 @@
     }
   },
   "POST /api/articles/:article_id/comments": {
-    "description": "should post a comment to a specific article ID and return the posted comment object",
+    "description": "posts a comment to a given article ID and returns the posted comment object",
     "queries": [],
     "exampleResponse": {
       "comment": {
@@ -78,7 +78,7 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description": "should update an article with how many new votes it has received and return the article object",
+    "description": "updates an article ID with how many new votes it has received and returns the article object",
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -94,12 +94,12 @@
     }
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "should delete the given comment by the comment ID and return no content",
+    "description": "deletes a comment by the given comment ID and returns no content",
     "queries": [],
     "exampleResponse": ""
   },
   "GET /api/users": {
-    "description": "",
+    "description": "returns an array of all user objects",
     "queries": [],
     "exampleResponse": {
       "users": [

@@ -9,7 +9,8 @@ exports.getArticlesById = (request, response, next) => {
 }
 
 exports.getAllArticles = (request, response, next) => {
-    selectAllArticles().then((articles) => {
+    const { topic, sort_by, order } = request.query
+    selectAllArticles(topic, sort_by, order).then((articles) => {
         response.status(200).send({articles})
     })
     .catch(next)
@@ -25,7 +26,7 @@ exports.getCommentsFromArticleId = (request, response, next) => {
 
 exports.postComments = (request, response, next) => {
     const articleId = request.params.article_id
-    const newComment = (request.body)
+    const newComment = request.body
     insertComments(articleId, newComment).then((comment) => {
         response.status(201).send({comment})
     })
