@@ -2,8 +2,12 @@ const db = require("../connection");
 
 exports.selectArticlesById = (id) => {
   return db.query(`
-    SELECT * FROM articles
-    WHERE article_id = $1;`,
+    SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body,
+    articles.created_at, articles.votes, articles.article_img_url, COUNT (comment_id) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`,
       [id]
     )
     .then(({ rows }) => {
@@ -65,7 +69,6 @@ exports.deleteSelectArticles = (id) => {
     DELETE FROM articles
     WHERE article_id = $1
     RETURNING *;`, [id]).then(({rows}) => {
-      console.log(rows)
       if (!rows.length) {
         return Promise.reject({ status: 404, msg: "Not found" });
       }
