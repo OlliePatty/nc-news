@@ -612,3 +612,27 @@ describe('POST /api/topics', () => {
       });
   });
 })
+
+describe('DELETE /api/articles/:article_id', () => {
+  test('status:204, when passed an article ID should delete that article and respond with no content', () => {
+    return request(app)
+    .delete('/api/articles/5')
+    .expect(204)
+  })
+  test('status:404, when passed an article ID thats does not exist, should should return Error msg Not found', () => {
+    return request(app)
+    .delete('/api/articles/999999')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Not found')
+    })
+  })
+  test('status:400, when passed an article ID thats not valid, should should return Error msg Bad request', () => {
+    return request(app)
+    .delete('/api/articles/notAnId')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request')
+    })
+  })
+})

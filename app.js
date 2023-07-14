@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 const endpointsData = require('./endpoints.json')
 const { getAllTopics, postTopics } = require('./db/controllers/topics.controllers.js')
-const { getArticlesById, getAllArticles, patchArticleVotes } = require('./db/controllers/articles.controllers.js')
+const { getArticlesById, getAllArticles, patchArticleVotes, deleteArticles } = require('./db/controllers/articles.controllers.js')
 const { getCommentsByArticleId, postComments, deleteComments } = require('./db/controllers/comments.controllers.js')
 const { getAllUsers, getUserByUsername } = require('./db/controllers/users.controllers.js')
 const { handlePsqlErrors , handleCustomErrors, handleServerErrors } = require('./db/errors/errors.js')
@@ -31,6 +31,8 @@ app.get('/api/users', getAllUsers)
 app.get('/api/users/:username', getUserByUsername)
 
 app.post('/api/topics', postTopics)
+
+app.delete('/api/articles/:article_id', deleteArticles)
 
 app.all('*', (_, response) => {
     response.status(404).send({status: 404, msg: 'Not found'})

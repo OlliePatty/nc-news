@@ -1,4 +1,4 @@
-const { selectArticlesById, selectAllArticles, selectCommentsByArticleId, insertComments, updateArticleVotes } = require('../models/articles.models.js')
+const { selectArticlesById, selectAllArticles, updateArticleVotes, deleteSelectArticles } = require('../models/articles.models.js')
 
 exports.getArticlesById = (request, response, next) => {
     const id = request.params.article_id
@@ -21,6 +21,14 @@ exports.patchArticleVotes = (request, response, next) => {
     const id = request.params.article_id
     updateArticleVotes(votes, id).then((article) => {
         response.status(200).send({article})
+    })
+    .catch(next)
+}
+
+exports.deleteArticles = (request, response, next) => {
+    const id = request.params.article_id
+    deleteSelectArticles(id).then(() => {
+        response.status(204).send()
     })
     .catch(next)
 }

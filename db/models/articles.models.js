@@ -59,3 +59,16 @@ exports.updateArticleVotes = (votes, id) => {
     return rows[0]
   })
 };
+
+exports.deleteSelectArticles = (id) => {
+  return db.query(`
+    DELETE FROM articles
+    WHERE article_id = $1
+    RETURNING *;`, [id]).then(({rows}) => {
+      console.log(rows)
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return rows;
+    });
+}
