@@ -65,8 +65,7 @@ describe("GET /api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
         });
       });
   });
@@ -530,6 +529,44 @@ describe('Get /api/articles (queries)', () => {
   })
 })
 
+describe('GET /api/articles/:article_id (comment_count)', () => {
+test('status:200, should return an article object, with the property, comment_count, which is the total count of all the comments with this article_id', () => {
+  return request(app)
+  .get('/api/articles/1')
+  .expect(200)
+  .then(({body}) => {
+    const { article } = body
+    expect(article).toMatchObject({
+      article_id: 1,
+      title: "Living in the shadow of a great man",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "I find this existence challenging",
+      created_at: "2020-07-09T20:11:00.000Z",
+      votes: 100,
+      article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      comment_count: '11'
+    })
+  })
+})
+test("status:404, should return an error msg with Not found when the ID does not exist", () => {
+  return request(app)
+    .get("/api/articles/999999")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Not found");
+    });
+});
+test("status:400, should return an error msg with Bad request when the ID is not valid", () => {
+  return request(app)
+    .get("/api/articles/notAnId")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad request");
+    });
+});
+})
+
 describe('GET /api/users/:username', () => {
   test('status:200, when passed a username, should return a user object with the correct properties', () => {
     return request(app)
@@ -616,7 +653,7 @@ describe('POST /api/topics', () => {
 describe('DELETE /api/articles/:article_id', () => {
   test('status:204, when passed an article ID should delete that article and respond with no content', () => {
     return request(app)
-    .delete('/api/articles/5')
+    .delete('/api/articles/1')
     .expect(204)
   })
   test('status:404, when passed an article ID thats does not exist, should should return Error msg Not found', () => {
