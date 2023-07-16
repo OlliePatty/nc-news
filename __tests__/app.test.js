@@ -458,7 +458,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("Get /api/articles (queries)", () => {
+describe("GET /api/articles (queries)", () => {
   test("status:200, should return an articles array of article objects, filtered by the topic value specified in the query", () => {
     return request(app)
       .get("/api/articles?topic=cats")
@@ -670,6 +670,80 @@ describe("PATCH /api/comments/:comment_id", () => {
     return request(app)
       .patch("/api/comments/notAnId")
       .send(votes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  test("status:201, should add a new article when passed a request body and return the new article back with the correct properties", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "Borat",
+      body: "Ver nice",
+      topic: "mitch",
+      article_img_url:
+        "https://m.media-amazon.com/images/M/MV5BMjA3MDA4NTUtYzY5YS00ZDlmLWI4ODUtODg4Y2Q1ZTkxMDVhXkEyXkFqcGdeQWFybm8@._V1_.jpg",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toMatchObject({
+          author: "icellusedkars",
+          title: "Borat",
+          body: "Ver nice",
+          article_id: 14,
+          topic: "mitch",
+          created_at: expect.any(String),
+          votes: 0,
+          article_img_url:
+            "https://m.media-amazon.com/images/M/MV5BMjA3MDA4NTUtYzY5YS00ZDlmLWI4ODUtODg4Y2Q1ZTkxMDVhXkEyXkFqcGdeQWFybm8@._V1_.jpg",
+          comment_count: 0,
+        });
+      });
+  });
+  test("status:201, should add a new article with the default article_img_url when not provided", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "Borat",
+      body: "Ver nice",
+      topic: "mitch",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toMatchObject({
+          author: "icellusedkars",
+          title: "Borat",
+          body: "Ver nice",
+          article_id: 14,
+          topic: "mitch",
+          created_at: expect.any(String),
+          votes: 0,
+          article_img_url:
+            "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+          comment_count: 0,
+        });
+      });
+  });
+  test("status:400, when passed a body with properties missing should return error msg Bad request", () => {
+    const newArticle = {
+      body: "Ver nice",
+      topic: "mitch",
+      article_img_url:
+        "https://m.media-amazon.com/images/M/MV5BMjA3MDA4NTUtYzY5YS00ZDlmLWI4ODUtODg4Y2Q1ZTkxMDVhXkEyXkFqcGdeQWFybm8@._V1_.jpg",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");

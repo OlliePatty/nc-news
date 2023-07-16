@@ -8,8 +8,8 @@ exports.getAllTopics = (request, response, next) => {
 }
 
 exports.postTopics = (request, response, next) => {
-    const newTopics = request.body
-    insertTopics(newTopics).then((topic) => {
+    const newTopic = request.body
+    insertTopics(newTopic).then((topic) => {
         response.status(201).send({topic})
     })
     .catch(next)
